@@ -39,11 +39,11 @@ def tracking_car_detect_obj(frame_vid):
     fgmask = cv2.dilate(fgmask, kernel2, iterations=5)
 
     contours_car, _ = cv2.findContours(fgmask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    car_dim = [0, 0, 0, 0]
 
     # frame_copy = frame_vid.copy()
     for cnt_car in contours_car:
-        # Lista com a dimensão do carrinho
-        car_dim = [0, 0, 0, 0]
         # Desenha retangulo quando detecta carrinho
         if (cv2.contourArea(cnt_car) > 5500) and (cv2.contourArea(cnt_car) < 8000):
             # Dimensões dos carrinho
@@ -57,6 +57,23 @@ def tracking_car_detect_obj(frame_vid):
     # cv2.imshow("fim", frame_copy)
     # cv2.imshow("fgmask", fgmask)
     # cv2.imshow("img", frame_car)
+
+def drawing_obstacles(frame):
+    # Detecta os objetos e retorna os contornos
+    obj_contours = detect_obstacles(frame.copy())
+
+    frame_copy = frame.copy()
+    # Desenha retangulo para cada um dos obstaculos detectados
+    for obj in obj_contours:
+        if not ((obj[0] >= car_contours[0]) and (obj[0] <= (car_contours[0] + car_contours[2])) and
+                (obj[1] >= car_contours[1]) and (obj[1] <= (car_contours[1] + car_contours[3]))):
+            cv2.rectangle(frame_copy, (obj[0], obj[1]), (obj[0] + obj[2], obj[1] + obj[3]), (255, 0, 255), 2)
+
+    # Desenha retangulo para o carrinho detectado
+    cv2.rectangle(frame_copy, (car_contours[0], car_contours[1]),
+                    (car_contours[0] + car_contours[2], car_contours[1] + car_contours[3]), (0, 0, 255), 2)
+    
+    return frame_copy
 
 
 if __name__ == '__main__':
@@ -73,25 +90,15 @@ if __name__ == '__main__':
         if not ret:
             print(f"Erro coletando frame do video")
             sys.exit()
-
-        # Detecta os objetos e retorna os contornos
-        obj_contours = detect_obstacles(frame.copy())
         # Detecta o carrinho e retorna os contornos
         car_contours = tracking_car_detect_obj(frame.copy())
 
-        frame_copy = frame.copy()
+
+        frame_copy = drawing_obstacles(frame.copy())
 
         # print(car_contours)
 
-        # Desenha retangulo para cada um dos obstaculos detectados
-        for obj in obj_contours:
-            if not ((obj[0] >= car_contours[0]) and (obj[0] <= (car_contours[0] + car_contours[2])) and
-                    (obj[1] >= car_contours[1]) and (obj[1] <= (car_contours[1] + car_contours[3]))):
-                cv2.rectangle(frame_copy, (obj[0], obj[1]), (obj[0] + obj[2], obj[1] + obj[3]), (255, 0, 255), 2)
 
-        # Desenha retangulo para o carrinho detectado
-        cv2.rectangle(frame_copy, (car_contours[0], car_contours[1]),
-                      (car_contours[0] + car_contours[2], car_contours[1] + car_contours[3]), (0, 0, 255), 2)
 
         cv2.imshow("fim", frame_copy)
         if cv2.waitKey(1) == ord('q'):

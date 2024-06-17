@@ -1,7 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from detect_car_and_objetcts.main import drawing_obstacles
+from ComESP.main import WorkerBLE
 import cv2
-
+from picamera2 import Picamera2
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -85,7 +86,28 @@ class Ui_MainWindow(object):
         self.bt_Iniciar.setObjectName("bt_Iniciar")
         self.verticalLayout.addWidget(self.bt_Iniciar)
         MainWindow.setCentralWidget(self.centralwidget)
+#BOTÕES CONTROLE-----------------------------------------------------
+        buttonStartBLE = QtWidgets.QPushButton("Start BLE")
+        buttonStartBLE.pressed.connect(self.startBLE)
+        self.verticalLayout.addWidget(buttonStartBLE)
+        
+        buttonForward = QtWidgets.QPushButton("Forward")
+        buttonForward.pressed.connect(self.Forward)
+        self.verticalLayout.addWidget(buttonForward)
+        
+        buttonBackward = QtWidgets.QPushButton("Backward")
+        buttonBackward.pressed.connect(self.Backward)
+        self.verticalLayout.addWidget(buttonBackward)
+        
+        buttonRight = QtWidgets.QPushButton("Right")
+        buttonRight.pressed.connect(self.Right)
+        self.verticalLayout.addWidget(buttonRight)
+        
+        buttonLeft = QtWidgets.QPushButton("Left")
+        buttonLeft.pressed.connect(self.Left)
+        self.verticalLayout.addWidget(buttonLeft)
 
+                
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -117,6 +139,29 @@ class Ui_MainWindow(object):
         convertToQtFormat = QtGui.QImage(frame.data, w, h, bytesPerLine, QtGui.QImage.Format_RGB888)
         p = convertToQtFormat.scaled(1600, 900, aspectRatioMode=QtCore.Qt.KeepAspectRatio)
         self.label.setPixmap(QtGui.QPixmap.fromImage(p))
+        
+    threadpool = QtCore.QThreadPool()
+        
+    def startBLE(self):
+        self.workerBLE = WorkerBLE()
+        self.threadpool.start(self.workerBLE)
+            
+    def Forward (self):
+        strToSend = "F"
+        self.workerBLE.toSendBLE(strToSend)
+        
+    def Backward (self):
+        strToSend = "B"
+        self.workerBLE.toSendBLE(strToSend)
+    
+    def Right (self):
+        strToSend = "R"
+        self.workerBLE.toSendBLE(strToSend)
+    
+    def Left (self):
+        strToSend = "L"
+        self.workerBLE.toSendBLE(strToSend)
+
 
 if __name__ == "__main__":
     import sys

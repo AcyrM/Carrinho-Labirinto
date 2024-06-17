@@ -1,0 +1,7 @@
+# Pasta com os videos
+detect_car_and_objetcts/videos
+# Pastas dos ambientes virtuais
+detect_car_and_objetcts/.venv
+detect_car_and_objetcts/.idea
+mazeSolver/.venv
+mazeSolver/.idea

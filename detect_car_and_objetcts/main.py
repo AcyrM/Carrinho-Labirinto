@@ -2,7 +2,10 @@ import cv2
 import numpy as np
 import sys
 
-
+background_object = cv2.bgsegm.createBackgroundSubtractorMOG()
+kernel = np.ones([3, 3], np.uint8)
+kernel2 = None
+    
 def detect_obstacles(frame_obj):
     # Lista com a dimensão dos objetos detectados
     obj_dim = []
@@ -61,6 +64,7 @@ def tracking_car_detect_obj(frame_vid):
 def drawing_obstacles(frame):
     # Detecta os objetos e retorna os contornos
     obj_contours = detect_obstacles(frame.copy())
+    car_contours = tracking_car_detect_obj(frame.copy())
 
     frame_copy = frame.copy()
     # Desenha retangulo para cada um dos obstaculos detectados

@@ -7,7 +7,7 @@ from picamera2 import Picamera2
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1920, 980)
+        MainWindow.resize(1420, 900)
         font = QtGui.QFont()
         font.setBold(False)
         font.setWeight(50)
@@ -15,12 +15,12 @@ class Ui_MainWindow(object):
         MainWindow.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.resize(QtCore.QSize(1600, 980))
+        self.centralwidget.resize(QtCore.QSize(1400, 900))
         self.centralwidget.setStyleSheet("")
         self.centralwidget.setObjectName("centralwidget")
         
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(10, 10, 1600, 900)
+        self.label.setGeometry(10, 10, 1400, 880)
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update_frame)
